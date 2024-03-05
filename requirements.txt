@@ -1,0 +1,28 @@
+# packaging
+pip
+setuptools
+twine
+wheel
+
+# data science
+numpy
+pandas
+scikit-learn
+
+# tests/linter
+pytest
+pylint
+
+# Google CLoud Platform
+google-cloud-storage
+google-cloud-bigquery
+
+# MLOps
+mlflow
+
+
+# API
+fastapi
+uvicorn
+
+# Utilities
