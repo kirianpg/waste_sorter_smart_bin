@@ -13,5 +13,4 @@ setup(name='waste_sorter_smart_bin',
       test_suite='tests',
       # include_package_data: to install data from MANIFEST.in
       include_package_data=True,
-      scripts=['scripts/waste_sorter_smart_bin'],
       zip_safe=False)
