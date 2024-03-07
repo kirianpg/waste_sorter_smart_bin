@@ -2,8 +2,6 @@ reinstall_package:
 	@pip uninstall -y project_waste_sorter || :
 	@pip install -e .
 
-
-
 download_kaggle_data:
 	@mkdir -p data/raw_data/kaggle_data
 	@curl -L 'https://www.dropbox.com/scl/fi/zp48rvm6atk66xyunofms/archive.zip?rlkey=h1gftcpgedo1qkstdgy7mw7ob&dl=0' -o data/raw_data/kaggle_data.zip
