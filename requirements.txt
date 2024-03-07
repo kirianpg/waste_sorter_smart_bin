@@ -19,10 +19,16 @@ google-cloud-bigquery
 
 # MLOps
 mlflow
-
+prefect
+psycopg2-binary
 
 # API
 fastapi
+pytz
 uvicorn
+
+# tests
+httpx           # HTTP client
+pytest-asyncio  # asynchronous I/O support for pytest
 
 # Utilities
