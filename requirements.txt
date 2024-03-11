@@ -9,6 +9,8 @@ numpy
 pandas
 scikit-learn
 notebook
+keras
+tensorflow
 
 # tests/linter
 pytest
