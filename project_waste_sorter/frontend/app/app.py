@@ -2,37 +2,42 @@ import streamlit as st
 import joblib
 from PIL import Image
 import numpy as np
+import os
 
 # Load trained model and preprocessing - use cache not to reload it every time?
 @st.cache()
 def load_model_and_preprocessing():
-    model = joblib.load('model_path')
-    preprocessing = joblib.load('preprocessing_path')
+    model = joblib.load(os.path.dirname(os.path.dirname(os.getcwd()))+'/ml_logic'+'/model.py')
+    preprocessing = joblib.load(os.path.dirname(os.path.dirname(os.getcwd()))+'/ml_logic'+'/preprocessing.py')
     return model, preprocessing
 
 model, preprocessing = load_model_and_preprocessing()
 
-# Formatting of interface
-st.markdown("""# This is your new SMART BIN!
-## It will take care of your waste management by classifying your waste automatically.
-The waste classifications in our MVP are:""")
+# Function to upload and save images
+def save_uploaded_image(uploaded_img):
+    UPLOAD_FOLDER = os.getcwd() + '/uploaded_images'
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
 
-# Function to preprocess new uploaded image
-def preprocess_image(image):
-    processed_image = preprocessing.preprocess(image)
-    return processed_image
+    if uploaded_img is not None:
+        image_path = os.path.join(UPLOAD_FOLDER, uploaded_img.name)
+        with open(image_path, "wb") as f:
+            f.write(uploaded_img.getbuffer())
+        st.success("Image saved successfully!")
+        return image_path
 
-# File Upload - do we only want to allo jpg or also others?
-uploaded_img = st.file_uploader("Upload Image", type=['jpg'])
+# File uploader
+uploaded_img = st.file_uploader("Upload Image", type=['jpg', 'png'])
+
+# Save uploaded image
+if uploaded_img is not None:
+    image_path = save_uploaded_image(uploaded_img)
+    st.image(image_path, caption="Uploaded Image", use_column_width=True)
 
 # Check if the upload worked
 if uploaded_img is not None:
-    # Display the uploaded image
-    image = Image.open(uploaded_img)
-    st.image(image, caption='Uploaded Image')
-
-    # Process the uploaded image
-    processed_image = preprocess_image(image)
+    # Preprocess the uploaded image
+    processed_image = preprocessing.preprocess(uploaded_img)
 
     # Make predictions
     prediction = model.predict(processed_image)
