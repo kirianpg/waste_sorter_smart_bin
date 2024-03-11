@@ -1,46 +1,32 @@
 import streamlit as st
-import joblib
+from io import BytesIO
 from PIL import Image
-import numpy as np
-import os
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.applications.vgg16 import preprocess_input
 
-# Load trained model and preprocessing - use cache not to reload it every time?
-@st.cache()
-def load_model_and_preprocessing():
-    model = joblib.load(os.path.dirname(os.path.dirname(os.getcwd()))+'/ml_logic'+'/model.py')
-    preprocessing = joblib.load(os.path.dirname(os.path.dirname(os.getcwd()))+'/ml_logic'+'/preprocessing.py')
-    return model, preprocessing
+#Michael we need to make sure the get_model() function returns the prediction
+from project_waste_sorter.interface.main_local import get_model
 
-model, preprocessing = load_model_and_preprocessing()
+def pred_streamlit(user_input):
+    """
+    Make a prediction using the latest trained model, using a single image as input
+    """
+    st.title("Waste Classification App")
+    uploaded_image = Image.open(BytesIO(user_input))
 
-# Function to upload and save images
-def save_uploaded_image(uploaded_img):
-    UPLOAD_FOLDER = os.getcwd() + '/uploaded_images'
-    if not os.path.exists(UPLOAD_FOLDER):
-        os.makedirs(UPLOAD_FOLDER)
+    # Resize to 224 x 224
+    uploaded_image = uploaded_image.resize((224, 224))
 
-    if uploaded_img is not None:
-        image_path = os.path.join(UPLOAD_FOLDER, uploaded_img.name)
-        with open(image_path, "wb") as f:
-            f.write(uploaded_img.getbuffer())
-        st.success("Image saved successfully!")
-        return image_path
+    # Convert the image pixels to a numpy array
+    image = img_to_array(uploaded_image)
 
-# File uploader
-uploaded_img = st.file_uploader("Upload Image", type=['jpg', 'png'])
+    # Reshape data for the model
+    image = image.reshape((1, 224, 224, 3))
 
-# Save uploaded image
-if uploaded_img is not None:
-    image_path = save_uploaded_image(uploaded_img)
-    st.image(image_path, caption="Uploaded Image", use_column_width=True)
+    # Prepare the image for the VGG model
+    image = preprocess_input(image)
 
-# Check if the upload worked
-if uploaded_img is not None:
-    # Preprocess the uploaded image
-    processed_image = preprocessing.preprocess(uploaded_img)
+    # Run prediction
+    model_prediction = get_model()
 
-    # Make predictions
-    prediction = model.predict(processed_image)
-
-    # Display the prediction
-    st.write("Prediction:", prediction)
+    return st.write("Prediction:", model_prediction)
