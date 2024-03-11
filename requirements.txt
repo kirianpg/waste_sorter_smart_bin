@@ -8,6 +8,7 @@ wheel
 numpy
 pandas
 scikit-learn
+notebook
 
 # tests/linter
 pytest
