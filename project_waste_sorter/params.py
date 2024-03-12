@@ -4,11 +4,10 @@ import numpy as np
 ##################  VARIABLES  ##################
 DATA_SIZE = "all" # ["1k", "200k", "all"]
 CHUNK_SIZE = 100000
-GCP_PROJECT = "wagon-bootcamp-414210" # TO COMPLETE
-GCP_PROJECT_WAGON = "wagon-public-datasets" # TO COMPLETE
-BQ_DATASET = "taxifare" # TO COMPLETE
-BQ_REGION = "EU"
-MODEL_TARGET = "local"
+GCP_PROJECT = os.environ.get("GCP_PROJECT")
+BQ_DATASET = os.environ.get("BQ_DATASET")
+BQ_REGION = os.environ.get("BQ_REGION")
+MODEL_TARGET = os.environ.get("MODEL_TARGET")
 ##################  CONSTANTS  #####################
 LOCAL_DATA_PATH = os.path.join(os.path.expanduser('~'), ".lewagon", "waste_sorter_smart_bin", "data")
 LOCAL_REGISTRY_PATH =  os.path.join(os.path.expanduser('~'), ".lewagon", "waste_sorter_smart_bin", "training_outputs")
