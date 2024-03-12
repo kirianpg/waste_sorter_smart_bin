@@ -2,6 +2,9 @@ import os
 import numpy as np
 
 ##################  VARIABLES  ##################
+BATCH_NUMBER=1
+SPLIT_RATIO_1=6.
+SPLIT_RATIO_2=.2
 DATA_SIZE = "all" # ["1k", "200k", "all"]
 CHUNK_SIZE = 100000
 GCP_PROJECT = os.environ.get("GCP_PROJECT")
