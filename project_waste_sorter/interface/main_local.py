@@ -1,5 +1,5 @@
 '''
-Main Python entry point containing all "routes"
+Main Python entry point containing all "routes" for local running
 '''
 
 from project_waste_sorter.params import *
@@ -20,37 +20,37 @@ def preprocess_vgg16():
     2. Basic preprocessing
     3. VGG16 specific preprocessing
     '''
+    # TO BE MODIFIED
+    # # Define root folder TBD!!!! => 🚨 We need to make sure everone has the same local structure and has the data in the same dir
+    # root_folder = os.path.join(LOCAL_DATA_PATH,'raw','Garbage classification')
 
-    # Define root folder TBD!!!! => 🚨 We need to make sure everone has the same local structure and has the data in the same dir
-    root_folder = os.path.join(LOCAL_DATA_PATH,'raw','Garbage classification')
+    # # Load images with labels (from ml_logic.data)
+    # images_with_labels = load_images_with_labels(root_folder)
 
-    # Load images with labels (from ml_logic.data)
-    images_with_labels = load_images_with_labels(root_folder)
+    # # Define target size for resizing
+    # target_size = (224, 224)
 
-    # Define target size for resizing
-    target_size = (224, 224)
+    # # Basic preprocessing : Resize and normalize images and convert categories to numbers
+    # # Preprocess each image in the dataset
+    # preprocessed_images = []
+    # labels_list = []
+    # for img, label in images_with_labels:
+    #     labels_list.append(label)
+    #     preprocessed_img = preprocess_image(img, target_size)
+    #     preprocessed_images.append(preprocessed_img)
+    # preprocessed_labels = preprocess_labels(labels_list)
 
-    # Basic preprocessing : Resize and normalize images and convert categories to numbers
-    # Preprocess each image in the dataset
-    preprocessed_images = []
-    labels_list = []
-    for img, label in images_with_labels:
-        labels_list.append(label)
-        preprocessed_img = preprocess_image(img, target_size)
-        preprocessed_images.append(preprocessed_img)
-    preprocessed_labels = preprocess_labels(labels_list)
+    # # Convert basic preprocessed_data to NumPy arrays
+    # images_array = np.array(preprocessed_images)
+    # labels_array = np.array(preprocessed_labels)
 
-    # Convert basic preprocessed_data to NumPy arrays
-    images_array = np.array(preprocessed_images)
-    labels_array = np.array(preprocessed_labels)
+    # # VGG16 specific preprocessing
+    # X_preprocessed = preprocess_input(images_array)
 
-    # VGG16 specific preprocessing
-    X_preprocessed = preprocess_input(images_array)
+    # # Target encoding
+    # y_preprocessed = to_categorical(labels_array, num_classes=6)
 
-    # Target encoding
-    y_preprocessed = to_categorical(labels_array, num_classes=6)
-
-    return X_preprocessed, y_preprocessed
+    # return X_preprocessed, y_preprocessed
 
 
 
