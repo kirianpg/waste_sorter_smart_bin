@@ -3,6 +3,8 @@ pip
 setuptools
 twine
 wheel
+colorama
+packaging<24
 
 # data science
 numpy
