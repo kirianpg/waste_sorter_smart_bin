@@ -27,6 +27,7 @@ def pred_streamlit(user_input):
     image = preprocess_input(image)
 
     # Run prediction
-    model_prediction = get_model()
+    model = get_model()
+    model_prediction = model.predict(image)
 
     return st.write("Prediction:", model_prediction)
