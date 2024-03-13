@@ -5,6 +5,8 @@ twine
 wheel
 colorama
 packaging<24
+pyarrow
+yapf
 
 # data science
 numpy
@@ -26,6 +28,7 @@ pylint
 # Google CLoud Platform
 google-cloud-storage
 google-cloud-bigquery
+db-dtypes
 
 # MLOps
 mlflow

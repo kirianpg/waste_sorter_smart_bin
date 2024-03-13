@@ -1,3 +1,4 @@
+#################### PACKAGE ACTIONS ###################
 reinstall_package:
 	@pip uninstall -y project_waste_sorter || :
 	@pip install -e .
@@ -38,6 +39,28 @@ local_setup:
 
 	@tree
 	@echo 'Local setup done with success !'
+
+
+run_preprocess:
+	python -c 'from project_waste_sorter.interface.main import preprocess_vgg16; preprocess_vgg16()'
+
+run_train:
+	python -c 'from project_waste_sorter.interface.main import train; train()'
+
+run_pred:
+	python -c 'from project_waste_sorter.interface.main import pred; pred()'
+
+run_evaluate:
+	python -c 'from project_waste_sorter.interface.main import evaluate; evaluate()'
+
+run_all: run_preprocess run_train run_pred run_evaluate
+
+run_workflow:
+	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m waste_sorter_smart_bin.interface.workflow
+
+gcp_connect:
+	@gcloud auth login
+	@gcloud config set project waste-sorter-smart-bin
 
 
 ################### DATA SOURCES ACTIONS ################

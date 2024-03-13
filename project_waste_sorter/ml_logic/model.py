@@ -70,7 +70,7 @@ def initialize_model_VGG16(input_shape: tuple) -> Model:
     return customized_VGG16
 
 
-def compile_model(model: Model, learning_rate=0.0005) -> Model:
+def compile_model(model: Model, learning_rate=0.001) -> Model:
     """
     Compile the Neural Network
     """
@@ -110,13 +110,13 @@ def train_model(
         y,
         validation_data=validation_data,
         validation_split=validation_split,
-        epochs=100,
+        epochs=5,
         batch_size=batch_size,
         callbacks=[es],
-        verbose=0
+        verbose=1
     )
 
-    print(f"✅ Model trained on {len(X)} rows with min val accuracy: {round(np.min(history.history['val_accuracy']), 2)}")
+    print(f"✅ Model trained on {len(X)} rows with last val accuracy: {round(history.history['val_accuracy'][-1], 2)}")
 
     return model, history
 

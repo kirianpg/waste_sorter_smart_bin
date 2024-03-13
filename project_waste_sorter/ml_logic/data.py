@@ -13,14 +13,14 @@ from project_waste_sorter.params import *
 
 #🚨 Needs to be fixed => it seems we need to install/import tf.keras??
 from tensorflow import keras
-from keras.preprocessing.image import load_img, img_to_array
+from keras.utils import load_img, img_to_array
 
 
 '''
 Data for training
 '''
 # Load Kaggle dataset
-def load_images_with_labels(root_folder, target_size=(244,244)):
+def load_images_with_labels(root_folder, target_size=(224,224)):
     '''
     Load images from local data folder
     Convert them to arrays
