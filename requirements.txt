@@ -5,11 +5,14 @@ twine
 wheel
 colorama
 packaging<24
+pyarrow
+yapf
 
 # data science
 numpy
 pandas
 scikit-learn
+
 # Trick to install the version of Tensorflow depending on your processor: darwin == Mac, ARM == M1
 tensorflow-macos==2.10.0; sys_platform == 'darwin' and 'ARM' in platform_version # Mac M-chips
 tensorflow==2.10.0; sys_platform == 'darwin' and 'ARM' not in platform_version # Mac Intel chips
@@ -25,6 +28,7 @@ pylint
 # Google CLoud Platform
 google-cloud-storage
 google-cloud-bigquery
+db-dtypes
 
 # MLOps
 mlflow
