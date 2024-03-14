@@ -124,7 +124,7 @@ def load_model(stage="Production") -> keras.Model:
             latest_blob.download_to_filename(latest_model_path_to_save)
 
             latest_model = keras.models.load_model(latest_model_path_to_save)
-
+            print(f"Lastest model name : {latest_blob.name}")
             print("✅ Latest model downloaded from cloud storage")
 
             return latest_model
