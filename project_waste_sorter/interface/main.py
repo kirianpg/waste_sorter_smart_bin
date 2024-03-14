@@ -56,7 +56,7 @@ def preprocess_vgg16():
     X_processed = preprocess_input(images_array)
 
     # Encode the X_processed into base64
-    X_processed_base64 = tensor_to_series(X_processed)
+    X_processed_base64 = msgpack_tensor_to_series(X_processed)
 
     # Target encoding
     y_processed = to_categorical(labels_array, num_classes=6)
@@ -85,7 +85,7 @@ def preprocess_vgg16():
 
 
 # TRAINING
-
+#@mlflow_run
 def train(
         learning_rate=0.0001,
         batch_size = 64,
@@ -124,20 +124,22 @@ def train(
         return None
 
     # Create (X_train_processed, y_train, X_val_processed, y_val)
-    first_split = int(len(data_processed_base64.iloc[:, 0]) /SPLIT_RATIO_1)
-    second_split = first_split + int(len(data_processed_base64.iloc[:, 0]) * SPLIT_RATIO_2)
+    first_split = int(data_processed_base64.shape[0] /SPLIT_RATIO_1)
+    second_split = first_split + int(data_processed_base64.shape[0] * SPLIT_RATIO_2)
+
+    print(f"first split : {first_split} \n second split : {second_split}")
 
     data_processed_val = data_processed_base64.iloc[first_split:second_split, :]
     data_processed_train = data_processed_base64.iloc[second_split:, :]
 
-    X_train_processed = series_to_tensor(data_processed_train.iloc[:, 0])
+    X_train_processed = msgpack_series_to_tensor(data_processed_train.iloc[:, 0])
     y_train = data_processed_train.iloc[:, 1:].to_numpy(dtype=np.float32)
 
-    X_val_processed = series_to_tensor(data_processed_val.iloc[:, 0])
+    X_val_processed = msgpack_series_to_tensor(data_processed_val.iloc[:, 0])
     y_val = data_processed_val.iloc[:, 1:].to_numpy(dtype=np.float32)
 
-    print(X_train_processed.shape[1:])
-    print(y_val)
+    #print(X_train_processed.shape)
+    #print(y_val)
 
     # Train model using `model.py`
     model = load_model_VGG16(input_shape=X_train_processed.shape[1:])
@@ -152,7 +154,7 @@ def train(
         validation_data=(X_val_processed, y_val)
     )
 
-    val_accuracy = np.min(history.history['val_accuracy'][-1])
+    val_accuracy = np.max(history.history['val_accuracy'])
 
     params = dict(
         context="train",
@@ -175,7 +177,7 @@ def train(
     return val_accuracy
 
 # EVALUATING
-
+#@mlflow_run
 def evaluate(
         stage: str = "Production"
     ) -> float:
@@ -208,11 +210,11 @@ def evaluate(
 
 
     # Create (X_test_processed, y_test)
-    first_split = int(len(data_processed_base64.iloc[:, 0]) /SPLIT_RATIO_1)
+    first_split = int(data_processed_base64.shape[0] /SPLIT_RATIO_1)
 
     data_processed_test = data_processed_base64.iloc[:first_split, :]
 
-    X_test_processed = series_to_tensor(data_processed_test.iloc[:, 0])
+    X_test_processed = msgpack_series_to_tensor(data_processed_test.iloc[:, 0])
     y_test = data_processed_test.iloc[:, 1:].to_numpy(dtype=np.float32)
 
 

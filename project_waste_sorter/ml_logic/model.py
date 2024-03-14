@@ -88,7 +88,7 @@ def train_model(
         model: Model,
         X: np.ndarray,
         y: np.ndarray,
-        batch_size=256,
+        batch_size=64,
         patience=2,
         validation_data=None, # overrides validation_split
         validation_split=0.3
@@ -106,17 +106,15 @@ def train_model(
     )
 
     history = model.fit(
-        X,
-        y,
-        validation_data=validation_data,
-        validation_split=validation_split,
-        epochs=5,
+        X, y,
         batch_size=batch_size,
+        epochs=100,
+        verbose=1,
         callbacks=[es],
-        verbose=1
+        validation_data=validation_data
     )
 
-    print(f"✅ Model trained on {len(X)} rows with last val accuracy: {round(history.history['val_accuracy'][-1], 2)}")
+    print(f"✅ Model trained on {len(X)} rows with max val accuracy: {round(np.max(history.history['val_accuracy']), 2)}")
 
     return model, history
 

@@ -1,4 +1,5 @@
 import base64
+import msgpack
 from PIL import Image
 import io
 import numpy as np
@@ -7,22 +8,16 @@ import tensorflow as tf
 
 def image_to_base64(image_array):
     """
-    Encodes an image array into a base64 string.
-
-    :param image_array: A Numpy array representing an image.
-    :return: A string representing the image encoded in base64.
+    Encodes a Numpy array (with float values) into a base64 string.
     """
-    # Convert the NumPy array to a PIL Image
-    image = Image.fromarray(np.uint8(image_array))
-    # Create a bytes buffer for the image
     buffer = io.BytesIO()
-    # Save the image to the buffer in PNG format
-    image.save(buffer, format="PNG")
-    # Get the buffer's contents as a byte string
+    # Save array to buffer using numpy's save function
+    np.save(buffer, image_array, allow_pickle=True, fix_imports=True)
+    # Encode the buffer's contents
     byte_data = buffer.getvalue()
-    # Encode the byte string in base64 and return it
-    base64_str = base64.b64encode(byte_data).decode('utf-8')
+    base64_str = base64.b64encode(byte_data).decode('ascii')
     return base64_str
+
 
 def tensor_to_series(tensor):
     """
@@ -37,17 +32,11 @@ def tensor_to_series(tensor):
 
 def base64_to_image(base64_string):
     """
-    Decodes a base64 string into a PIL Image. Assumes the image is already
-    preprocessed (in terms of resizing and pixel values) to match expectations.
-
-    :param base64_string: The base64 encoded string of an image.
-    :return: A NumPy array representing the decoded image.
+    Decodes a base64 string into a Numpy array with float values.
     """
-    # Decode the base64 string to bytes, then open it as an image
     image_data = base64.b64decode(base64_string)
-    image = Image.open(io.BytesIO(image_data))
-    # Convert the image to a NumPy array
-    image_array = np.array(image, dtype=np.float32)
+    # Load array from buffer using numpy's load function
+    image_array = np.load(io.BytesIO(image_data), allow_pickle=True, fix_imports=True)
     return image_array
 
 def series_to_tensor(series):
@@ -59,4 +48,43 @@ def series_to_tensor(series):
     """
     # Use np.stack to combine the arrays into a single numpy.ndarray
     images_array = np.stack([base64_to_image(item) for item in series], axis=0)
+    return images_array
+
+### MSGPACK ###
+
+def image_to_msgpack(image_array):
+    """
+    Encodes a Numpy array into a msgpack byte string.
+    """
+    buffer = io.BytesIO()
+    # Use numpy to save the array in the buffer
+    np.save(buffer, image_array, allow_pickle=True, fix_imports=True)
+    # Use msgpack to encode the content of the buffer
+    byte_data = buffer.getvalue()
+    packed_data = msgpack.packb(byte_data)
+    return packed_data
+
+def msgpack_tensor_to_series(tensor):
+    """
+    Converts a tensor of images into a Pandas Series with the images encoded in msgpack.
+    """
+    images_packed = pd.Series([image_to_msgpack(image) for image in tensor])
+    return images_packed
+
+def msgpack_to_image(packed_data):
+    """
+    Decodes a msgpack byte string into a Numpy array.
+    """
+    # Decode the msgpack content to obtain bytes
+    byte_data = msgpack.unpackb(packed_data)
+    # Load the array from the bytes
+    image_array = np.load(io.BytesIO(byte_data), allow_pickle=True, fix_imports=True)
+    return image_array
+
+def msgpack_series_to_tensor(series):
+    """
+    Converts a Pandas Series containing msgpack encoded images into a NumPy array.
+    """
+    # Use np.stack to combine the arrays in an unique numpy.ndarray
+    images_array = np.stack([msgpack_to_image(item) for item in series], axis=0)
     return images_array
