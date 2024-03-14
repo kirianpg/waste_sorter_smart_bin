@@ -1,13 +1,13 @@
 import streamlit as st
 from io import BytesIO
 from PIL import Image
-from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.applications.vgg16 import preprocess_input
+from keras.preprocessing.image import img_to_array
+from keras.applications.vgg16 import preprocess_input
 
 #Michael we need to make sure the get_model() function returns the prediction
 from project_waste_sorter.interface.main_local import get_model
 
-def pred_streamlit(user_input):
+def pred_streamlit(user_input, model):
     """
     Make a prediction using the latest trained model, using a single image as input
     """
@@ -27,7 +27,6 @@ def pred_streamlit(user_input):
     image = preprocess_input(image)
 
     # Run prediction
-    model = get_model()
     model_prediction = model.predict(image)
 
     return st.write("Prediction:", model_prediction)

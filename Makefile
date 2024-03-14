@@ -63,6 +63,8 @@ gcp_connect:
 	@gcloud config set project waste-sorter-smart-bin
 # To add you account do this :
 # gcloud projects add-iam-policy-binding waste-sorter-smart-bin --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" --role="roles/owner"
+# SERVICE_ACCOUNT_EMAIL = le-wagon-training@wagon-bootcamp-414210.iam.gserviceaccount.com
+# gcloud projects add-iam-policy-binding waste-sorter-smart-bin --member="serviceAccount:le-wagon-training@wagon-bootcamp-414210.iam.gserviceaccount.com" --role="roles/owner"
 
 ################### DATA SOURCES ACTIONS ################
 
