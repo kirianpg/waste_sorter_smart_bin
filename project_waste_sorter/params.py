@@ -3,8 +3,8 @@ import numpy as np
 
 ##################  VARIABLES  ##################
 DATA_SOURCE="kaggle"
-SPLIT_RATIO_1=6.
-SPLIT_RATIO_2=.2
+SPLIT_RATIO_1=float(os.environ.get("SPLIT_RATIO_1"))
+SPLIT_RATIO_2=float(os.environ.get("SPLIT_RATIO_2"))
 DATA_SIZE = "all" # ["1k", "200k", "all"]
 CHUNK_SIZE = int(os.environ.get("CHUNK_SIZE"))
 MODEL_TARGET = os.environ.get("MODEL_TARGET")
@@ -35,12 +35,12 @@ DTYPES_RAW = {
 }
 
 CATEGORIES_MAP = {
+    'trash': 0,
     'glass': 1,
     'paper': 2,
     'cardboard': 3,
     'plastic': 4,
-    'metal': 5,
-    'trash': 0
+    'metal': 5
     }
 
 DTYPES_PROCESSED = np.float32

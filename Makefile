@@ -61,7 +61,8 @@ run_workflow:
 gcp_connect:
 	@gcloud auth login
 	@gcloud config set project waste-sorter-smart-bin
-
+# To add you account do this :
+# gcloud projects add-iam-policy-binding waste-sorter-smart-bin --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" --role="roles/owner"
 
 ################### DATA SOURCES ACTIONS ################
 
