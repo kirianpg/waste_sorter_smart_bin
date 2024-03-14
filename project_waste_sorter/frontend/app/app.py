@@ -3,9 +3,12 @@ from io import BytesIO
 from PIL import Image
 from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
+from project_waste_sorter.params import *
+from project_waste_sorter.interface.main import pred
 
 #Michael we need to make sure the get_model() function returns the prediction
 from project_waste_sorter.interface.main_local import get_model
+
 
 def pred_streamlit(user_input, model):
     """
@@ -28,5 +31,11 @@ def pred_streamlit(user_input, model):
 
     # Run prediction
     model_prediction = model.predict(image)
+
+    # Formatting the result
+    # We only need the max prediction
+    #predictions_with_categories = [(INDEX_TO_CATEGORIES[i], prob) for i, prob in enumerate(predictions[0])]
+
+    #predictions_with_categories.sort(key=lambda x: x[1], reverse=True)
 
     return st.write("Prediction:", model_prediction)
