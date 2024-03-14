@@ -214,7 +214,7 @@ def evaluate(
 
     data_processed_test = data_processed_base64.iloc[:first_split, :]
 
-    X_test_processed = series_to_tensor(data_processed_test.iloc[:, 0])
+    X_test_processed = msgpack_series_to_tensor(data_processed_test.iloc[:, 0])
     y_test = data_processed_test.iloc[:, 1:].to_numpy(dtype=np.float32)
 
 
