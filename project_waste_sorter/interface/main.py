@@ -55,21 +55,21 @@ def preprocess_vgg16():
     # VGG16 specific preprocessing
     X_processed = preprocess_input(images_array)
 
-    # Encode the X_processed into base64
-    X_processed_base64 = msgpack_tensor_to_series(X_processed)
+    # Encode the X_processed into msgpack
+    X_processed_msgpack = msgpack_tensor_to_series(X_processed)
 
     # Target encoding
     y_processed = to_categorical(labels_array, num_classes=6)
 
     # Finally we shuffle:
-    p = np.random.permutation(len(X_processed_base64))
-    X_processed_base64, y_processed = X_processed_base64[p], y_processed[p]
+    p = np.random.permutation(len(X_processed_msgpack))
+    X_processed_msgpack, y_processed = X_processed_msgpack[p], y_processed[p]
 
     # TO BE DONE
     # Load a DataFrame onto BigQuery containing [X_processed, y_preprocessed] using data.load_data_to_bq()
     # 🚨 Data needs to be flattened if we want to transform it into a DataFrame !!!
     data_processed = pd.DataFrame(np.column_stack((
-        X_processed_base64,
+        X_processed_msgpack,
         y_processed)))
 
     load_data_to_bq(
@@ -89,7 +89,7 @@ def preprocess_vgg16():
 def train(
         learning_rate=0.0001,
         batch_size = 64,
-        patience = 10
+        patience = 2
     ) -> float:
 
     """
@@ -112,25 +112,25 @@ def train(
     """
 
     data_processed_cache_path = Path(LOCAL_DATA_PATH).joinpath("processed", f"processed_data_{DATA_SOURCE}.csv")
-    data_processed_base64 = get_data_with_cache(
+    data_processed_msgpack = get_data_with_cache(
         gcp_project=GCP_PROJECT,
         query=query,
         cache_path=data_processed_cache_path,
         data_has_header=False
     )
 
-    if data_processed_base64.shape[0] < 10:
+    if data_processed_msgpack.shape[0] < 10:
         print("❌ Not enough processed data retrieved to train on")
         return None
 
     # Create (X_train_processed, y_train, X_val_processed, y_val)
-    first_split = int(data_processed_base64.shape[0] /SPLIT_RATIO_1)
-    second_split = first_split + int(data_processed_base64.shape[0] * SPLIT_RATIO_2)
+    first_split = int(data_processed_msgpack.shape[0] /SPLIT_RATIO_1)
+    second_split = first_split + int(data_processed_msgpack.shape[0] * SPLIT_RATIO_2)
 
-    print(f"first split : {first_split} \n second split : {second_split}")
+    #print(f"first split : {first_split} \n second split : {second_split}")
 
-    data_processed_val = data_processed_base64.iloc[first_split:second_split, :]
-    data_processed_train = data_processed_base64.iloc[second_split:, :]
+    data_processed_val = data_processed_msgpack.iloc[first_split:second_split, :]
+    data_processed_train = data_processed_msgpack.iloc[second_split:, :]
 
     X_train_processed = msgpack_series_to_tensor(data_processed_train.iloc[:, 0])
     y_train = data_processed_train.iloc[:, 1:].to_numpy(dtype=np.float32)
@@ -197,22 +197,22 @@ def evaluate(
     """
 
     data_processed_cache_path = Path(LOCAL_DATA_PATH).joinpath("processed", f"processed_data_{DATA_SOURCE}.csv")
-    data_processed_base64 = get_data_with_cache(
+    data_processed_msgpack = get_data_with_cache(
         gcp_project=GCP_PROJECT,
         query=query,
         cache_path=data_processed_cache_path,
         data_has_header=False
     )
 
-    if data_processed_base64.shape[0] < 10:
+    if data_processed_msgpack.shape[0] < 10:
         print("❌ Not enough processed data retrieved to train on")
         return None
 
 
     # Create (X_test_processed, y_test)
-    first_split = int(data_processed_base64.shape[0] /SPLIT_RATIO_1)
+    first_split = int(data_processed_msgpack.shape[0] /SPLIT_RATIO_1)
 
-    data_processed_test = data_processed_base64.iloc[:first_split, :]
+    data_processed_test = data_processed_msgpack.iloc[:first_split, :]
 
     X_test_processed = msgpack_series_to_tensor(data_processed_test.iloc[:, 0])
     y_test = data_processed_test.iloc[:, 1:].to_numpy(dtype=np.float32)
@@ -258,7 +258,7 @@ def pred(image_path: str = None) -> np.ndarray:
 
     img_array_expanded_dims = np.expand_dims(img_array, axis=0)
 
-    img_preprocessed = tf.keras.applications.mobilenet.preprocess_input(img_array_expanded_dims)
+    img_preprocessed = preprocess_input(img_array_expanded_dims)
 
     predictions = model.predict(img_preprocessed)
 
