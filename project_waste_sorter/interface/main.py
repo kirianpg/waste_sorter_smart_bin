@@ -247,7 +247,7 @@ def pred(image_path: str = None) -> np.ndarray:
     INDEX_TO_CATEGORIES = {v: k for k, v in CATEGORIES_MAP.items()}
 
     if image_path is None:
-        image_path = Path(LOCAL_DATA_PATH).joinpath("test", "Dechets_CartonBrun.jpg")
+        image_path = Path(LOCAL_DATA_PATH).joinpath("test", "14290_une.jpg")
 
     model = load_model()
     assert model is not None
@@ -266,8 +266,12 @@ def pred(image_path: str = None) -> np.ndarray:
 
     predictions_with_categories.sort(key=lambda x: x[1], reverse=True)
 
-    print("\n✅ prediction done: ", f"Number of classes : {len(predictions_with_categories)}\n", predictions_with_categories,  "\n")
-    return predictions
+    best_prediction = predictions_with_categories[0]
+
+    #print("\n✅ prediction done: ", f"Number of classes : {len(predictions_with_categories)}\n", predictions_with_categories,  "\n")
+    #print(best_prediction)
+
+    return best_prediction
 
 # TO BE MODIFIED
 if __name__ == '__main__':
