@@ -269,7 +269,7 @@ def pred(image_path: str = None) -> np.ndarray:
     best_prediction = predictions_with_categories[0]
 
     #print("\n✅ prediction done: ", f"Number of classes : {len(predictions_with_categories)}\n", predictions_with_categories,  "\n")
-    #print(best_prediction)
+    print(dict(result = best_prediction))
 
     return best_prediction
 

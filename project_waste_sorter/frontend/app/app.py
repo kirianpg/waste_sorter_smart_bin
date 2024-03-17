@@ -3,11 +3,6 @@ from io import BytesIO
 from PIL import Image
 import requests
 import io
-from keras.preprocessing.image import img_to_array
-from keras.applications.vgg16 import preprocess_input
-from project_waste_sorter.ml_logic.registry import load_model
-from project_waste_sorter.params import *
-from project_waste_sorter.api.api_file import *
 
 
 # Title
@@ -26,13 +21,13 @@ def predict(image):
 # Display prediction results
 if uploaded_file is not None:
     # Preprocess image
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
-    image_bytes = io.BytesIO()
-    image.save(image_bytes, format='PNG')
+    #image = Image.open(uploaded_file)
+    st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+    #image_bytes = io.BytesIO()
+    #image.save(image_bytes, format='PNG')
 
     # Make prediction request
-    prediction = predict(image_bytes)
+    prediction = predict(uploaded_file)
 
     # Display prediction results
     st.write("Prediction:", prediction)

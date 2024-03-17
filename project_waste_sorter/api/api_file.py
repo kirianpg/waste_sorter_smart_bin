@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
-from keras.preprocessing.image import img_to_array
+from keras.utils import img_to_array
 from keras.applications.vgg16 import preprocess_input
 from project_waste_sorter.ml_logic.registry import *
 from google.cloud import storage
@@ -8,7 +8,7 @@ from PIL import Image
 
 app = FastAPI()
 
-model = load_model()  # Load the model at startup
+app.state.model = load_model()  # Load the model at startup
 
 @app.get("/")
 def index():
@@ -32,14 +32,14 @@ async def classify_image(file: UploadFile = File(...)):
         image = preprocess_input(image)
 
         # Run prediction
-        model_prediction = model.predict(image)
+        model_prediction = app.state.model.predict(image)
 
         # Format the result
         INDEX_TO_CATEGORIES = {v: k for k, v in CATEGORIES_MAP.items()}
-        predictions_with_categories = [(INDEX_TO_CATEGORIES[i], prob) for i, prob in enumerate(model_prediction[0])]
+        predictions_with_categories = [(INDEX_TO_CATEGORIES[i], float(prob)) for i, prob in enumerate(model_prediction[0])]
         predictions_with_categories.sort(key=lambda x: x[1], reverse=True)
         best_prediction = predictions_with_categories[0]
 
-        return best_prediction
+        return dict(result = best_prediction)
     except Exception as e:
         return {"error": str(e)}
