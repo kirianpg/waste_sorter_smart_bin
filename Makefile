@@ -58,6 +58,9 @@ run_all: run_preprocess run_train run_pred run_evaluate
 run_workflow:
 	PREFECT__LOGGING__LEVEL=${PREFECT_LOG_LEVEL} python -m waste_sorter_smart_bin.interface.workflow
 
+run_api:
+	uvicorn project_waste_sorter.api.api_file:app --reload
+
 gcp_connect:
 	@gcloud auth login
 	@gcloud config set project waste-sorter-smart-bin
