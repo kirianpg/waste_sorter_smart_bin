@@ -1,41 +1,38 @@
 import streamlit as st
 from io import BytesIO
 from PIL import Image
+import requests
+import io
 from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import preprocess_input
+from project_waste_sorter.ml_logic.registry import load_model
 from project_waste_sorter.params import *
-from project_waste_sorter.interface.main import pred
-
-#Michael we need to make sure the get_model() function returns the prediction
-from project_waste_sorter.interface.main_local import get_model
+from project_waste_sorter.api.api_file import *
 
 
-def pred_streamlit(user_input, model):
-    """
-    Make a prediction using the latest trained model, using a single image as input
-    """
-    st.title("Waste Classification App")
-    uploaded_image = Image.open(BytesIO(user_input))
+# Title
+st.title("Waste Sorter Smart Bin")
 
-    # Resize to 224 x 224
-    uploaded_image = uploaded_image.resize((224, 224))
+# Upload image
+uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
-    # Convert the image pixels to a numpy array
-    image = img_to_array(uploaded_image)
+# Function to make prediction request to backend
+def predict(image):
+    endpoint = "http://localhost:8000/predict/"
+    files = {"file": image}
+    response = requests.post(endpoint, files=files)
+    return response.json()
 
-    # Reshape data for the model
-    image = image.reshape((1, 224, 224, 3))
+# Display prediction results
+if uploaded_file is not None:
+    # Preprocess image
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Uploaded Image", use_column_width=True)
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format='PNG')
 
-    # Prepare the image for the VGG model
-    image = preprocess_input(image)
+    # Make prediction request
+    prediction = predict(image_bytes)
 
-    # Run prediction
-    model_prediction = model.predict(image)
-
-    # Formatting the result
-    # We only need the max prediction
-    #predictions_with_categories = [(INDEX_TO_CATEGORIES[i], prob) for i, prob in enumerate(predictions[0])]
-
-    #predictions_with_categories.sort(key=lambda x: x[1], reverse=True)
-
-    return st.write("Prediction:", model_prediction)
+    # Display prediction results
+    st.write("Prediction:", prediction)
