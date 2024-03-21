@@ -6,7 +6,7 @@ FROM tensorflow/tensorflow:2.10.0
 COPY requirements.txt /requirements.txt
 COPY setup.py /setup.py
 COPY project_waste_sorter /project_waste_sorter
-COPY models /models
+COPY training_outputs /training_outputs
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
