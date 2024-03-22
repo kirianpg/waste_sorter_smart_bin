@@ -1,7 +1,11 @@
 
+####### 👇 OPTIMIZED SOLUTION (x86)👇 #######
 
 # tensorflow base-images are optimized: lighter than python-buster + pip install tensorflow
-FROM tensorflow/tensorflow:2.10.0
+FROM python:3.10.6-slim
+
+# Installing make
+RUN apt-get update && apt-get install -y make
 
 COPY requirements.txt /requirements.txt
 COPY setup.py /setup.py
