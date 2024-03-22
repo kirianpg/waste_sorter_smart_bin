@@ -23,21 +23,20 @@ local_setup:
 	@mkdir -p data/processed
 
 # Create the data folder for modeling
-	@mkdir -p ~/.lewagon/waste_sorter_smart_bin/data/
+	@mkdir -p models/.lewagon/waste_sorter_smart_bin/data/
 
 # Create relevant subfolders
-	@mkdir -p ~/.lewagon/waste_sorter_smart_bin/data/processed
-	@mkdir -p ~/.lewagon/waste_sorter_smart_bin/data/raw
+	@mkdir -p models/.lewagon/waste_sorter_smart_bin/data/processed
+	@mkdir -p models/.lewagon/waste_sorter_smart_bin/data/raw
 
 # Create the training_outputs folder
-	@mkdir -p ~/.lewagon/waste_sorter_smart_bin/training_outputs
+	@mkdir -p models/.lewagon/waste_sorter_smart_bin/training_outputs
 
 # Create relevant subfolders
-	@mkdir -p ~/.lewagon/waste_sorter_smart_bin/training_outputs/metrics
-	@mkdir -p ~/.lewagon/waste_sorter_smart_bin/training_outputs/models
-	@mkdir -p ~/.lewagon/waste_sorter_smart_bin/training_outputs/params
+	@mkdir -p models/.lewagon/waste_sorter_smart_bin/training_outputs/metrics
+	@mkdir -p models/.lewagon/waste_sorter_smart_bin/training_outputs/models
+	@mkdir -p models/.lewagon/waste_sorter_smart_bin/training_outputs/params
 
-	@tree
 	@echo 'Local setup done with success !'
 
 

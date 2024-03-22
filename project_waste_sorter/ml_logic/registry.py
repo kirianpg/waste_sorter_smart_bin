@@ -117,7 +117,8 @@ def load_model(stage="Production") -> keras.Model:
 
         client = storage.Client()
         blobs = list(client.get_bucket(BUCKET_NAME).list_blobs(prefix="model"))
-
+        print(f"Local Registry Path : {LOCAL_REGISTRY_PATH}")
+        print(f"blob list : {blobs}")
         try:
             latest_blob = max(blobs, key=lambda x: x.updated)
             latest_model_path_to_save = os.path.join(LOCAL_REGISTRY_PATH, latest_blob.name)
@@ -128,9 +129,9 @@ def load_model(stage="Production") -> keras.Model:
             print("✅ Latest model downloaded from cloud storage")
 
             return latest_model
-        except:
+        except Exception as e:
             print(f"\n❌ No model found in GCS bucket {BUCKET_NAME}")
-
+            print(f"\n❌ Error: {e}")
             return None
 
     elif MODEL_TARGET == "mlflow":

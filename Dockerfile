@@ -14,6 +14,12 @@ COPY project_waste_sorter /project_waste_sorter
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+COPY Makefile Makefile
+#COPY scripts/ /scripts/
+RUN make reset_local_files
+RUN make local_setup
+#RUN make reinstall_package
+
 # NEED TO MODIFY
 CMD uvicorn project_waste_sorter.api.api_file:app --host 0.0.0.0 --port $PORT
 
