@@ -61,6 +61,9 @@ run_workflow:
 run_api:
 	uvicorn project_waste_sorter.api.api_file:app --reload
 
+run_streamlit:
+	streamlit run project_waste_sorter/frontend/app/app.py
+
 gcp_connect:
 	@gcloud auth login
 	@gcloud config set project waste-sorter-smart-bin
