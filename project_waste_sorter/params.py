@@ -25,8 +25,8 @@ GAR_IMAGE = os.environ.get("GAR_IMAGE")
 GAR_MEMORY = os.environ.get("GAR_MEMORY")
 ##################  CONSTANTS  #####################
 LOCAL_DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-#LOCAL_REGISTRY_PATH =  os.path.join(os.path.expanduser('~'), ".lewagon", "waste_sorter_smart_bin", "training_outputs")
-LOCAL_REGISTRY_PATH =  os.path.join(os.path.sep,"models")
+LOCAL_REGISTRY_PATH =  os.path.join("models", ".lewagon", "waste_sorter_smart_bin", "training_outputs")
+#LOCAL_REGISTRY_PATH =  os.path.join(os.path.sep,"models")
 COLUMN_NAMES_RAW = ['image_base64','y']
 
 # TO MODIFY

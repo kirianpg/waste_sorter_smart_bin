@@ -54,7 +54,7 @@ uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
 # Function to make prediction request to backend
 def predict(image):
-    endpoint = "http://localhost:8000/predict/"
+    endpoint = "https://waste-sorter-service-tuoydlr2ga-ew.a.run.app/predict/"
     files = {"file": image}
     response = requests.post(endpoint, files=files)
     return response.json()
