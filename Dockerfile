@@ -1,21 +1,3 @@
-# $DEL_BEGIN
-
-# ####### 👇 SIMPLE SOLUTION (x86 and M1) 👇 ########
-# FROM python:3.8.12-buster
-
-# WORKDIR /prod
-
-# COPY requirements.txt requirements.txt
-# RUN pip install -r requirements.txt
-
-# COPY taxifare taxifare
-# COPY setup.py setup.py
-# RUN pip install .
-
-# COPY Makefile Makefile
-# RUN make reset_local_files
-
-# CMD uvicorn taxifare.api.fast:app --host 0.0.0.0 --port $PORT
 
 ####### 👇 OPTIMIZED SOLUTION (x86)👇 #######
 
@@ -33,14 +15,16 @@ COPY setup.py /setup.py
 # We strip the requirements from useless packages like `ipykernel`, `matplotlib` etc...
 #COPY requirements_prod.txt requirements.txt
 
-#COPY taxifare taxifare
-RUN pip install -r requirements.txt
+COPY project_waste_sorter project_waste_sorter
 RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-#COPY Makefile Makefile
-#RUN make reset_local_files
+
+COPY Makefile Makefile
+RUN make reset_local_files
+RUN make reinstall_package
 
 # NEED TO MODIFY
-# CMD uvicorn taxifare.api.fast:app --host 0.0.0.0 --port $PORT
+CMD uvicorn project_waste_sorter.api.api_file:app --host 0.0.0.0 --port $PORT
 
 # $DEL_END
