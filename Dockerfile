@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y make
 COPY requirements.txt /requirements.txt
 COPY setup.py /setup.py
 COPY project_waste_sorter /project_waste_sorter
-COPY models /models
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
