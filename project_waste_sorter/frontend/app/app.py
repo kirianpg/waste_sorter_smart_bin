@@ -1,8 +1,12 @@
 import streamlit as st
-from io import BytesIO
-from PIL import Image
+# from io import BytesIO
+# from PIL import Image
 import requests
-import io
+# import io
+import pandas as pd
+import plotly.express as px
+import os
+from project_waste_sorter.params import *
 
 
 # Title
@@ -59,20 +63,56 @@ def predict(image):
     response = requests.post(endpoint, files=files)
     return response.json()
 
-# Display prediction results
+# Function to get geodata bases
+def get_geodata(class_file):
+    'Returns the df for a certain garbage class'
+
+    # Path to geodata files
+    path_to_data = os.path.join("project_waste_sorter", "frontend", "app", "recycling_points_data", class_file)
+
+    # Specific structure and preprocessing for Lyon DB => if other cities, we will have to homogenize all DB
+    df = pd.read_csv(path_to_data, sep=';', index_col='idemplacementsilo')
+    df['lon'] = df['lon'].apply(lambda x: float(x.replace(",",".")))
+    df['lat'] = df['lat'].apply(lambda x: float(x.replace(",",".")))
+
+    return df
+
+# Make and display prediction results
 if uploaded_file is not None:
     # Preprocess image
-    #image = Image.open(uploaded_file)
     st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    #image_bytes = io.BytesIO()
-    #image.save(image_bytes, format='PNG')
 
     # Make prediction request
     prediction = predict(uploaded_file)
     prob = round(100*prediction['result'][1],0)
-    bin = prediction['result'][0]
+    image_class = prediction['result'][0]
 
     # Display prediction results
-    st.write(f"I'm {prob}% sure this goes to the {bin} bin!")
+    st.write(f"I'm {prob}% sure that this goes to the {image_class} bin!")
 
-    st.title(":green[Let's go recycle this garbage!]")
+    # Select your city
+    st.markdown('<h4 style="color: green;">Let me take you to the proper bin ! 🤝 </h4>', unsafe_allow_html=True)
+    city = st.selectbox("Where do you live?", [None, 'Lyon', 'Other city'])
+
+    if city is not None:
+        RP_message, bins, bin_images, points = custom_policies[city]
+
+        # message
+        st.write(f"The recycling policy is the following in {city} : ")
+        st.text(RP_message)
+
+        # action
+        bin = bins[image_class]
+        st.write(f":{bin}[🫵  You should throw this piece of garbage to the {bin} bin! 🫵 ]")
+        st.image(os.path.join("project_waste_sorter", "frontend", "app", "images",bin_images[image_class]))
+
+        # map
+        if points is not None:
+            df = get_geodata(points[image_class])
+            st.write(f"You can go to one of the following recycling points for {image_class} : ")
+            fig = px.scatter_mapbox(df, lat="lat", lon="lon", zoom=3, text='adresse')
+            fig.update_layout(mapbox_style="open-street-map")
+            fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+            st.plotly_chart(fig)
+
+        st.title(":green[Let's go recycle this garbage!]")

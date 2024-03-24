@@ -1,0 +1,7 @@
+summary {
+    cursor: pointer;
+    display:list-item;
+}
+summary::marker {
+    font-size: 1em;
+}
