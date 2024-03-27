@@ -1,6 +1,8 @@
 raw_data/
 data/
 models/
+custom/
+project_waste_sorter.egg-info/
 
 .env
 
