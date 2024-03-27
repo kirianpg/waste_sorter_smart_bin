@@ -6,7 +6,7 @@ import requests
 import pandas as pd
 import plotly.express as px
 import os
-from project_waste_sorter.params import *
+from bins_locations import *
 
 
 # Title
