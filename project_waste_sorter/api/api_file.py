@@ -1,14 +1,20 @@
 from fastapi import FastAPI, File, UploadFile
+from tensorflow import keras
 from keras.utils import img_to_array
 from keras.applications.vgg16 import preprocess_input
 from project_waste_sorter.ml_logic.registry import *
 from google.cloud import storage
 from io import BytesIO
 from PIL import Image
+from project_waste_sorter.params import *
+import os
 
 app = FastAPI()
 
-app.state.model = load_model()  # Load the model at startup
+local_model_directory = os.path.join(os.path.sep, LOCAL_REGISTRY_PATH, "models")
+model_path = glob.glob(f"{local_model_directory}/*")
+
+app.state.model = keras.models.load_model(model_path) #load_model()  # Load the model at startup
 
 @app.get("/")
 def index():
